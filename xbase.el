@@ -557,6 +557,9 @@ Special commands:
   (make-local-variable 'font-lock-defaults)
   (make-local-variable 'defun-prompt-regexp)
   (make-local-variable 'end-of-defun-function)
+  (make-local-variable 'syntax-propertize-function)
+  ;; Apply '<' (comment-start) syntax property only when * is at column 0
+  (setq syntax-propertize-function (syntax-propertize-rules ("^\\(\\*\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
   (setq indent-line-function  #'xbase-indent-line
         defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
         end-of-defun-function #'xbase-end-of-defun
