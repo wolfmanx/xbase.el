@@ -538,22 +538,18 @@ This function is used by `xbase-mode' as the value for
       (forward-line -1))))
 
 ;;;###autoload
-(defun xbase-mode ()
+(define-derived-mode xbase-mode nil "Xbase"
   "Major mode for editing Xbase source files.
 
 Special commands:
 
 \\{xbase-mode-map}"
-  (interactive)
-  (kill-all-local-variables)
-  (use-local-map xbase-mode-map)
+  :group 'xbase
   (make-local-variable 'indent-line-function)
   (make-local-variable 'font-lock-defaults)
   (make-local-variable 'defun-prompt-regexp)
   (make-local-variable 'end-of-defun-function)
-  (setq major-mode            'xbase-mode
-        mode-name             "Xbase"
-        indent-line-function  #'xbase-indent-line
+  (setq indent-line-function  #'xbase-indent-line
         defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
         end-of-defun-function #'xbase-end-of-defun
         font-lock-defaults    (list
@@ -586,9 +582,7 @@ Special commands:
                                 (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
 
                                )
-                               nil t))
-  (set-syntax-table xbase-mode-syntax-table)
-  (run-hooks 'xbase-mode-hook))
+                               nil t)))
 
 (provide 'xbase)
 
