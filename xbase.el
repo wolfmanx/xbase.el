@@ -566,7 +566,7 @@ Special commands:
   ;; Apply '<' (comment-start) syntax property only when * is the first non-whitespace character in a line
   (setq syntax-propertize-function (syntax-propertize-rules ("^\\s *\\([*]\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
   (setq comment-start "// ")
-  (setq comment-start-skip "\\(^[*]\\|//+\\|&&+\\)\\s *")
+  (setq comment-start-skip "\\(^\\s *[*]\\|//+\\|&&+\\)\\s *")
   (setq comment-column 0)
   (setq indent-line-function  #'xbase-indent-line
         defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
