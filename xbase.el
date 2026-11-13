@@ -81,7 +81,10 @@
   (unless (fboundp 'defgroup)
     (defmacro defgroup  (&rest rest) nil)
     (defmacro defcustom (symbol init docstring &rest rest)
-      `(defvar ,symbol ,init ,docstring))))
+      `(defvar ,symbol ,init ,docstring)))
+  (unless (fboundp 'setq-local)
+    (defmacro setq-local (var val)
+      (list 'set (list 'make-local-variable (list 'quote var)) val))))
 
 ;; General customize options.
 
@@ -555,53 +558,43 @@ Special commands:
 
 \\{xbase-mode-map}"
   :group 'xbase
-  (make-local-variable 'indent-line-function)
-  (make-local-variable 'font-lock-defaults)
-  (make-local-variable 'defun-prompt-regexp)
-  (make-local-variable 'end-of-defun-function)
-  (make-local-variable 'syntax-propertize-function)
-  (make-local-variable 'comment-start)
-  (make-local-variable 'comment-start-skip)
-  (make-local-variable 'comment-column)
   ;; Apply '<' (comment-start) syntax property only when * is the first non-whitespace character in a line
-  (setq syntax-propertize-function (syntax-propertize-rules ("^\\s *\\([*]\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
-  (setq comment-start "// ")
-  (setq comment-start-skip "\\(^\\s *[*]\\|//+\\|&&+\\)\\s *")
-  (setq comment-column 0)
-  (setq indent-line-function  #'xbase-indent-line
-        defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
-        end-of-defun-function #'xbase-end-of-defun
-        font-lock-defaults    (list
-                               (list
+  (setq-local syntax-propertize-function (syntax-propertize-rules ("^\\s *\\([*]\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
+  (setq-local comment-start "// ")
+  (setq-local comment-start-skip "\\(^\\s *[*]\\|//+\\|&&+\\)\\s *")
+  (setq-local comment-column 0)
+  (setq-local indent-line-function  #'xbase-indent-line
+              defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
+              end-of-defun-function #'xbase-end-of-defun
+              font-lock-defaults    (list
+                                     (list
+                                      ;; The first few entries deal with lists that
+                                      ;; the user can configure.
 
-                                ;; The first few entries deal with lists that
-                                ;; the user can configure.
+                                      ;; User configurable list of statements.
+                                      (list (regexp-opt xbase-font-lock-statements 'words) 1 xbase-keyword-face)
 
-                                ;; User configurable list of statements.
-                                (list (regexp-opt xbase-font-lock-statements 'words) 1 xbase-keyword-face)
+                                      ;; User configurable list of pre-processor directives.
+                                      (list (concat "\\<#" (regexp-opt xbase-font-lock-directives t) "\\>") 1 xbase-directive-face)
 
-                                ;; User configurable list of pre-processor directives.
-                                (list (concat "\\<#" (regexp-opt xbase-font-lock-directives t) "\\>") 1 xbase-directive-face)
+                                      ;; User configurable list of commands.
+                                      (list (regexp-opt xbase-font-lock-commands 'words) 1 xbase-command-face)
 
-                                ;; User configurable list of commands.
-                                (list (regexp-opt xbase-font-lock-commands 'words) 1 xbase-command-face)
+                                      ;; User configurable list of logic operators
+                                      (list (concat "\\." (regexp-opt xbase-font-lock-logic 'words) "\\.") 1 xbase-logic-face)
 
-                                ;; User configurable list of logic operators
-                                (list (concat "\\." (regexp-opt xbase-font-lock-logic 'words) "\\.") 1 xbase-logic-face)
+                                      ;; Now for some "hard wired" rules.
 
-                                ;; Now for some "hard wired" rules.
+                                      ;; "defun" function names.
+                                      (list "\\<\\(function\\|procedure\\|method\\|access\\|assign\\|class\\|inherit\\|from\\)\\>\\s-\\<\\(\\w*\\)\\>" 2 xbase-function-name-face)
 
-                                ;; "defun" function names.
-                                (list "\\<\\(function\\|procedure\\|method\\|access\\|assign\\|class\\|inherit\\|from\\)\\>\\s-\\<\\(\\w*\\)\\>" 2 xbase-function-name-face)
+                                      ;; #define/ifdef/ifndef "constant" name.
+                                      (list "#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(\\sw+\\)" 2 xbase-variable-name-face)
 
-                                ;; #define/ifdef/ifndef "constant" name.
-                                (list "#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(\\sw+\\)" 2 xbase-variable-name-face)
-
-                                ;; Common constants.
-                                (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
-
-                               )
-                               nil t)))
+                                      ;; Common constants.
+                                      (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
+                                      )
+                                     nil t)))
 
 (provide 'xbase)
 
