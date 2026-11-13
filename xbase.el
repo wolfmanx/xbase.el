@@ -1,12 +1,14 @@
 ;;; xbase.el --- A mode for editing Xbase programs.
-;; Copyright (C) 2002 Mike Romberg <romberg@fsl.noaa.gov> and
-;;                    Dave Pearson <davep@davep.org>
+;; Copyright (C) 2002, 2026 Mike Romberg <romberg@fsl.noaa.gov> and
+;;                          Dave Pearson <davep@davep.org> and
+;;                          Wolfgang Scherer <wolfgang.scherer@gmx.de>
 
 ;; Author: Mike Romberg <romberg@fsl.noaa.gov>
 ;; Author: Dave Pearson <davep@davep.org>
-;; Version: 1.38
+;; Author: Wolfgang Scherer <wolfgang.scherer@gmx.de>
+;; Version: 1.39
 ;; Keywords: languages
-;; URL: https://github.com/davep/xbase.el
+;; URL: https://github.com/wolfmanx/xbase.el
 ;; Package-Requires: ((cl-lib "0.5"))
 
 ;; xbase.el is free software distributed under the terms of the GNU General
@@ -21,7 +23,7 @@
 ;;
 ;; You can always find the latest version of xbase.el at:
 ;;
-;; <URL:http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/xbasemode/xbasemode/xbase.el?rev=HEAD>
+;; <URL:https://github.com/wolfmanx/xbase.el>
 
 ;;; THANKS:
 ;;
