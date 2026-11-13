@@ -563,8 +563,8 @@ Special commands:
   (make-local-variable 'comment-start)
   (make-local-variable 'comment-start-skip)
   (make-local-variable 'comment-column)
-  ;; Apply '<' (comment-start) syntax property only when * is at column 0
-  (setq syntax-propertize-function (syntax-propertize-rules ("^\\(\\*\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
+  ;; Apply '<' (comment-start) syntax property only when * is the first non-whitespace character in a line
+  (setq syntax-propertize-function (syntax-propertize-rules ("^\\s *\\([*]\\)[^\n]*\\(\n\\|\\'\\)" (1 "< c") (2 "> c"))))
   (setq comment-start "// ")
   (setq comment-start-skip "\\(^[*]\\|//+\\|&&+\\)\\s *")
   (setq comment-column 0)
