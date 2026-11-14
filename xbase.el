@@ -600,6 +600,9 @@ Special commands:
                                       ;; #define/ifdef/ifndef "constant" name.
                                       (list (concat "\\(?:^\\|\\`\\|\\B\\)#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(" xbase-symbol-name-rx "\\)") 2 xbase-variable-name-face)
 
+                                      ;; "defvar" variable names
+                                      (list (concat "\\<\\(?:public\\|private\\|static\\|local\\)\\>[ \t]+\\(" xbase-symbol-name-rx "\\(?:[^,]*,[ \t]*" xbase-symbol-name-rx "\\)*\\)") '(1 xbase-variable-name-face))
+
                                       ;; Common constants.
                                       (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
                                       )
