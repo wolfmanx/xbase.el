@@ -438,7 +438,6 @@ Note: WHOLE-EXP is currently ignored."
 (defvar xbase-mode-syntax-table
   (let ((st (make-syntax-table)))
     (modify-syntax-entry ?_  "w"      st)
-    (modify-syntax-entry ?#  "w"      st) ; So that PP stuff font locks correctly. TODO: Is this the right thing to do?
     (modify-syntax-entry ?\' "\""     st) ; "'" is a string delimiter.
     (modify-syntax-entry ?/  ". 124b" st) ; Enable "//" and "/**/" comments.
     (modify-syntax-entry ?*  ". 23"   st) ; Ditto.
@@ -575,7 +574,7 @@ Special commands:
                                       (list (regexp-opt xbase-font-lock-statements 'words) 1 xbase-keyword-face)
 
                                       ;; User configurable list of pre-processor directives.
-                                      (list (concat "\\<#" (regexp-opt xbase-font-lock-directives t) "\\>") 1 xbase-directive-face)
+                                      (list (concat "\\(?:^\\|\\`\\|\\B\\)#[ \t]*" (regexp-opt xbase-font-lock-directives t) "\\>") 1 xbase-directive-face)
 
                                       ;; User configurable list of commands.
                                       (list (regexp-opt xbase-font-lock-commands 'words) 1 xbase-command-face)
@@ -589,7 +588,7 @@ Special commands:
                                       (list "\\<\\(function\\|procedure\\|method\\|access\\|assign\\|class\\|inherit\\|from\\)\\>\\s-\\<\\(\\w*\\)\\>" 2 xbase-function-name-face)
 
                                       ;; #define/ifdef/ifndef "constant" name.
-                                      (list "#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(\\sw+\\)" 2 xbase-variable-name-face)
+                                      (list "\\(?:^\\|\\`\\|\\B\\)#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(\\sw+\\)" 2 xbase-variable-name-face)
 
                                       ;; Common constants.
                                       (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
