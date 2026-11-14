@@ -572,10 +572,10 @@ Special commands:
   (setq-local comment-start "// ")
   (setq-local comment-start-skip "\\(^\\s *[*]\\|//+\\|&&+\\)\\s *")
   (setq-local comment-column 0)
-  (setq-local indent-line-function  #'xbase-indent-line
-              defun-prompt-regexp   (xbase-rule-regexp 'xbase-defun)
-              end-of-defun-function #'xbase-end-of-defun
-              font-lock-defaults    (list
+  (setq-local indent-line-function #'xbase-indent-line)
+  (setq-local defun-prompt-regexp (xbase-rule-regexp 'xbase-defun))
+  (setq-local end-of-defun-function #'xbase-end-of-defun)
+  (setq-local font-lock-defaults    (list
                                      (list
                                       ;; The first few entries deal with lists that
                                       ;; the user can configure.
