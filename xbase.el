@@ -98,9 +98,20 @@
   :type 'integer
   :group 'xbase)
 
+(defcustom xbase-symbol-name-rx
+  "\\(?:[_A-Za-z][_0-9A-Za-z]*\\)"
+  "Strict regular expression matching an xBase symbol name.
+It ignores the Harbour compiler's length limit of 63 characters.
+Note: Using word constituent characters is just sloppy, since it
+matches tons of illegal characters and it requires to modify the
+syntax code for underscores to be `w', which is very annoying
+when navigating word-wise."
+  :type 'string
+  :group 'xbase)
+
 (defcustom xbase-indent-rules
 ;;   Rule Name            RegExp                          Opening Rule         Closing Rule       Offset   Subsequent Offset  Is Statement?
-  '((xbase-if             "^[\t ]*if"                     nil                  xbase-endif        nil      nil                t)
+  `((xbase-if             "^[\t ]*if"                     nil                  xbase-endif        nil      nil                t)
     (xbase-else           "^[\t ]*else\\(if\\)?"          xbase-if             xbase-endif        nil      nil                t)
     (xbase-endif          "^[\t ]*end[\t ]*if"            xbase-if             nil                nil      nil                t)
     (xbase-hash-if        "^[\t ]*#if"                    nil                  xbase-hash-endif   0        nil                nil)
@@ -120,7 +131,7 @@
     (xbase-text           "^[\t ]*text"                   nil                  xbase-endtext      nil      0                  t)
     (xbase-endtext        "^[\t ]*endtext"                xbase-text           nil                nil      nil                t)
     (xbase-local          "^[\t ]*local"                  xbase-defun          xbase-defun        nil      nil                t)
-    (xbase-defun          "^[\t ]*\\(static\\|init\\|exit\\)?[\t ]*\\(procedure\\|function\\)[\t ]+\\(\\w+\\)[\t ]*(?" xbase-defun xbase-defun nil nil t))
+    (xbase-defun          ,(concat "^[\t ]*\\(static\\|init\\|exit\\)?[\t ]*\\(procedure\\|function\\)[\t ]+\\(" xbase-symbol-name-rx "\\)[\t ]*(?") xbase-defun xbase-defun nil nil t))
   "*Rules for indenting Xbase code."
   :type '(repeat (list    :tag "Indentation rule"
                   (symbol :tag "Rule name")
@@ -437,7 +448,6 @@ Note: WHOLE-EXP is currently ignored."
 
 (defvar xbase-mode-syntax-table
   (let ((st (make-syntax-table)))
-    (modify-syntax-entry ?_  "w"      st)
     (modify-syntax-entry ?\' "\""     st) ; "'" is a string delimiter.
     (modify-syntax-entry ?/  ". 124b" st) ; Enable "//" and "/**/" comments.
     (modify-syntax-entry ?*  ". 23"   st) ; Ditto.
@@ -585,10 +595,10 @@ Special commands:
                                       ;; Now for some "hard wired" rules.
 
                                       ;; "defun" function names.
-                                      (list "\\<\\(function\\|procedure\\|method\\|access\\|assign\\|class\\|inherit\\|from\\)\\>\\s-\\<\\(\\w*\\)\\>" 2 xbase-function-name-face)
+                                      (list (concat "\\<\\(function\\|procedure\\|method\\|access\\|assign\\|class\\|inherit\\|from\\)\\>\\s-\\<\\(" xbase-symbol-name-rx "\\)\\>") 2 xbase-function-name-face)
 
                                       ;; #define/ifdef/ifndef "constant" name.
-                                      (list "\\(?:^\\|\\`\\|\\B\\)#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(\\sw+\\)" 2 xbase-variable-name-face)
+                                      (list (concat "\\(?:^\\|\\`\\|\\B\\)#[ \t]*\\(define\\|ifn?def\\)[ \t]+\\(" xbase-symbol-name-rx "\\)") 2 xbase-variable-name-face)
 
                                       ;; Common constants.
                                       (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
