@@ -66,7 +66,7 @@
 ;; o Add the following to ~/.emacs to ensure that xbase-mode is used when
 ;;   you edit Xbase code:
 ;;
-;;   (setq auto-mode-alist (cons (cons "\\.\\(prg\\|ch\\)$" 'xbase-mode) auto-mode-alist))
+;;   (add-to-list 'auto-mode-alist '("\\.\\(prg\\|ch\\)$" . xbase-mode))
 
 ;;; Code:
 
@@ -607,6 +607,16 @@ Special commands:
                                       (list "\\(\\.\\(f\\|\\t\\)\\.\\|\\<\\(nil\\|self\\|super\\)\\>\\)" 0 xbase-constant-face)
                                       )
                                      nil t)))
+
+;; compilation-mode support
+(eval-after-load 'compile
+  '(progn
+     (unless (assq 'harbour compilation-error-regexp-alist-alist)
+       ;;                 1  2                  3             4  5                       6
+       (push '(harbour "\\(\\([^( \t\r\n]+\\)(\\([0-9]+\\)) \\(\\(Warning W[0-9]+\\)\\|\\(Error E[0-9]+\\)\\)\\)" 2 3 nil 2 1 )
+             compilation-error-regexp-alist-alist))
+     (unless (memq 'harbour compilation-error-regexp-alist)
+       (push 'harbour compilation-error-regexp-alist))))
 
 (provide 'xbase)
 
